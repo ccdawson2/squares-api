@@ -1,0 +1,201 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Square Data Access API 2
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+
+paths:
+  /dbStats:
+    get:
+      description: Return DB Stats
+      x-swagger-router-controller: squares
+      operationId: dbStats
+
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/dbStatsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"          
+            
+  /squares:
+    get:
+      description: Get Squares
+      x-swagger-router-controller: squares
+      operationId: getSquares
+      
+      parameters:
+        -
+          name: size
+          in: query
+          description: Size of array
+          required: true
+          type: number
+          format: double
+
+      responses:
+        "200":
+          description: Successful response
+          # Use JSON Schema format
+          schema:
+            $ref: "#/definitions/SquareSchema"
+
+    post:
+      description: Post Square (INSERT)
+      x-swagger-router-controller: squares
+      operationId: createSquare
+
+      parameters:
+        - in: body
+          name: body
+          description: Add a Square
+          required: false
+          schema:
+            $ref: "#/definitions/SquareSchema"
+            
+      responses:
+        "201":
+          description: Null response
+        default:
+          description: unexpected error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /squares/{id}: 
+    get:             
+       description: Returns a square based on a passed id
+       x-swagger-router-controller: squares
+       operationId: getSingleSquare
+       
+       parameters: 
+         -
+           name: id
+           in:  path
+           description: ID of square to fetch
+           required: true
+           type: string
+
+       responses:
+         "201":
+            description: Null response
+         default:
+           description: unexpected error
+           schema:
+             $ref: "#/definitions/ErrorResponse"            
+
+    put:
+      description: Put Square (UPDATE)
+      x-swagger-router-controller: squares
+      operationId: updateSquare
+       
+      parameters:
+        - 
+          name: id
+          in:  path
+          description: Update a Square
+          required: true
+          type: string
+          
+        - name: body
+          in: body
+          description: Pet object that needs to be added to the store
+          required: false
+          schema:
+            $ref: "#/definitions/SquareSchema"
+  
+      responses:
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Pet not found
+        "405":
+          description: Validation exception   
+          
+    delete: 
+      description: deletes a single square
+      x-swagger-router-controller: squares
+      operationId: deleteSquare
+
+      parameters: 
+        - 
+          name: id
+          in: path
+          description: ID of square to delete
+          required: true
+          type: integer
+          format: int64
+      
+      responses: 
+        "204":
+          description: square deleted
+        default: 
+          description: unexpected error
+          schema: 
+            $ref: "#/definitions/ErrorResponse"         
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+    
+# complex objects have schema definitions
+definitions:
+
+  SquareSchema:
+  
+    required:
+    
+      - squareId
+      - xCoord
+      - yCoord
+      
+    properties:
+    
+      squareId:
+        type: integer
+      ownerId:
+        type: integer        
+      xCoord:
+        type: integer
+      yCoord: 
+        type: integer
+      desc:
+        type: string
+      shortDesc:
+        type: string
+      image:
+        type: string
+
+  dbStatsResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+        
+  ErrorResponse:
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string  
