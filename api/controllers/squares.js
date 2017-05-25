@@ -15,7 +15,9 @@ var squareSchema = mongoose.Schema({
 
 var square = mongoose.model('square', squareSchema);
 
-mongoose.connect('mongodb://localhost:27017/squares');
+//mongoose.connect('mongodb://localhost:27017/squares');
+mongoose.connect('mongodb://admin:admin@ds147421.mlab.com:47421/squares');
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'db not connected...'));
 db.once('open', function callback() {});

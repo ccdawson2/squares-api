@@ -18,6 +18,10 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "swagger project test"
+    "test": "swagger project test",
+    "deploy": "gcloud app deploy --project squares-api-168505"  
+  }
+  "engines" : {
+     "node" : ">=0.10.3 <6.10.0" 
   }
 }
