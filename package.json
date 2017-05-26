@@ -1,6 +1,6 @@
 {
-  "name": "swagger1",
-  "version": "0.0.1",
+  "name": "swagger",
+  "version": "0.0.2",
   "private": true,
   "description": "New Swagger API Project",
   "keywords": [],
